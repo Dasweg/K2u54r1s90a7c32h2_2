@@ -1,0 +1,5 @@
+﻿  Курсач.cpp
+c:\users\anato\source\repos\курсач\курсач\курсач.cpp(259): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+c:\users\anato\source\repos\курсач\курсач\курсач.cpp(228): warning C4715: menu_user: значение возвращается не при всех путях выполнения
+c:\users\anato\source\repos\курсач\курсач\курсач.cpp(179): warning C4715: menu_ADmin: значение возвращается не при всех путях выполнения
+  Курсач.vcxproj -> C:\Users\anato\source\repos\Курсач\Debug\Курсач.exe
