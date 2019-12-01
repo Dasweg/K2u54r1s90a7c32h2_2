@@ -85,8 +85,10 @@ void search(); // Поиск
 void impFile(); // Импортирование данных
 
 void controlUserAccount(); // уч. записи пользователя
+void spisokAccount(); // список уч. записей пользователя
 void showAllDataUsers(); // показать все уч. записи пользователя
 void addAccountUser(); // добавление новой уч. записи пользователя
+void delAccountUser(); // удаление уч. записи пользователя
 
 void autorization();// вход в уч. запись
 
@@ -198,7 +200,7 @@ void controlUserAccount() { // управление уч. записями
 					case 1: showAllDataUsers(); break;
 					case 2: addAccountUser(); break;
 					case 3:  break;
-					case 4:  break;
+					case 4: delAccountUser(); break;
 					case 5:  break;
 					case 6: autorization(); break;
 				}
@@ -214,7 +216,7 @@ void controlUserAccount() { // управление уч. записями
 }
 
 void addAccountUser() { // Добавление уч. записи
-	system("cls");// Error: доделать сохранение в файл, при повторном добавлении
+	system("cls");// Error: доделать сохранение в файл, при еще одном (повторном) добавлении уч. записи
 	if ((flAc = fopen(fileRecAc, "wb")) == NULL)
 	{
 		cout << "Ошибка при создании файла" << endl;
@@ -251,6 +253,52 @@ void addAccountUser() { // Добавление уч. записи
 	controlUserAccount();
 }
 
+void delAccountUser() { // удаление уч. записи
+	system("cls");//Error: указанный элемент удаляется, но логин и пароль удаленного элемента передается всем оставшимся уч. записям
+	int numDelAc;
+	char switchNum;
+	if ((flAc = fopen(fileRecAc, "wb")) == NULL)
+	{
+		cout << "Ошибка при создании файла" << endl;
+		exit(1);
+	}
+	fclose(flAc);
+	if ((flAc = fopen(fileRecAc, "rb+")) == NULL)
+	{
+		cout << "Ошибка при создании" << endl;
+		exit(1);
+	}
+	cout << "\t\t***Удаление записи***\n\n";
+	cout << "Номер удаляемой уч. записи: ";
+	cin >> numDelAc;
+	numDelAc--;
+	if (numDelAc >= 0 && numDelAc < nut)
+	{
+		cout << "Вы действительно хотите удалить эту уч. запись (y/n = д/н)? ";
+		cin >> switchNum;
+		if (switchNum == 'y' || switchNum == 'д') {
+			for (int i = numDelAc; i < nut - 1; i++)
+				users[i] = users[i + 1];
+			nut--;
+			cout << "\nРезультат удаления\n";
+			spisokAccount();
+			fclose(flAc);
+			system("pause");
+			controlUserAccount();
+		}
+		else if (switchNum == 'n' || switchNum == 'н') {
+			cout << "Вы вернетесь в главное меню\n";
+			system("pause");
+			controlUserAccount();
+		}
+		else
+		{
+			cout << "Такой операции не существует! Попробуйте еще раз.\n"; system("pause"); delAccountUser();
+		}
+	}
+	else { cout << "Введен некорректный номер удалемой записи! Попробуйте еще раз.\n"; system("pause"); delAccountUser(); }
+}
+
 void showAllDataUsers() { // просмотр всех уч. записи
 	system("cls");
 	if ((flAc = fopen(fileRecAc, "rb")) == NULL)
@@ -275,6 +323,16 @@ void showAllDataUsers() { // просмотр всех уч. записи
 	fclose(flAc);
 	system("pause");
 	controlUserAccount();
+}
+
+void spisokAccount() {
+	cout << "----------------------------------------------------------------------------\n\t\t***Список учетных записей***\n----------------------------------------------------------------------------\n\n";
+	cout << "|---------------------------------|\n|  \tЛогин\t  |  \tПароль\t  |\n|---------------------------------|\n";
+	for (int i = 0; i < nut; i++) {
+		cout << "| " << setw(14) << users[nut].login << setw(4) << " | " << setw(10) << users[nut].password << setw(6) << " |\n";
+		fwrite(&users[i], sizeof(TUsers), 1, flAc);
+	}
+	cout << "|---------------------------------|\n";
 }
 
 int menu_user() // Меню Пользователя
