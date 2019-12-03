@@ -188,7 +188,7 @@ void controlUserAccount() { // управление уч. записями
 	cout << "--------------------------------------------------------------\n";
 	cout << "Введите команду: "; cin >> sel;
 	cout << "--------------------------------------------------------------\n";
-	if (sel > 0 & sel < 7)
+	if (sel > 0 & sel < 6)
 	{
 		for (int sec = 0;; sec++)
 		{
@@ -201,8 +201,8 @@ void controlUserAccount() { // управление уч. записями
 					case 2: addAccountUser(); break;
 					case 3:  break;
 					case 4: delAccountUser(); break;
-					case 5:  break;
-					case 6: autorization(); break;
+					case 5: autorization(); break;
+					case 6: exit(1); break;
 				}
 			}
 		}
@@ -239,12 +239,12 @@ void addAccountUser() { // Добавление уч. записи
 		cin.getline(users[i].login, sizeof(users[i].login));
 		cin.get(users[i].login, sizeof(users[i].login));
 
-			cout << "Пароль(6 символов): ";
-			cin.getline(users[i].password, sizeof(users[i].password));
-			cin.get(users[i].password, sizeof(users[i].password));
-			//if (regex_match(users[i].password, regular)) { //регулярное для char*
-			//	break;
-			//}
+		cout << "Пароль(6 символов): ";
+		cin.getline(users[i].password, sizeof(users[i].password));
+		cin.get(users[i].password, sizeof(users[i].password));
+		//if (regex_match(users[i].password, regular)) { //регулярное для char*
+		//	break;
+		//}
 		cout << "--------------------------------------------------------------\n";
 		fwrite(&users[i], sizeof(TUsers), 1, flAc);
 	}
@@ -254,7 +254,7 @@ void addAccountUser() { // Добавление уч. записи
 }
 
 void delAccountUser() { // удаление уч. записи
-	system("cls");//Error: указанный элемент удаляется, но логин и пароль удаленного элемента передается всем оставшимся уч. записям
+	system("cls");
 	int numDelAc;
 	char switchNum;
 	if ((flAc = fopen(fileRecAc, "wb")) == NULL)
@@ -325,11 +325,11 @@ void showAllDataUsers() { // просмотр всех уч. записи
 	controlUserAccount();
 }
 
-void spisokAccount() {
+void spisokAccount() { // список всех уч. записей
 	cout << "----------------------------------------------------------------------------\n\t\t***Список учетных записей***\n----------------------------------------------------------------------------\n\n";
 	cout << "|---------------------------------|\n|  \tЛогин\t  |  \tПароль\t  |\n|---------------------------------|\n";
 	for (int i = 0; i < nut; i++) {
-		cout << "| " << setw(14) << users[nut].login << setw(4) << " | " << setw(10) << users[nut].password << setw(6) << " |\n";
+		cout << "| " << setw(14) << users[i].login << setw(4) << " | " << setw(10) << users[i].password << setw(6) << " |\n";
 		fwrite(&users[i], sizeof(TUsers), 1, flAc);
 	}
 	cout << "|---------------------------------|\n";
@@ -708,7 +708,6 @@ void spisok() { // Список
 	cout << "|---------------------------------------------------------------------------------------------------------|\n|  \t\tФИО\t\t  | Группа | Средний бал |  Доход   | Участие в общественной деятельности |\n|---------------------------------------------------------------------------------------------------------|\n";
 	for (int i = 0; i < nst; i++) {
 		cout << "| " << setw(30) << stud[i].fio << setw(4) << " | " << stud[i].group << " | " << setw(6) << stud[i].bal << setw(8) << " | " << setw(5) << stud[i].income << setw(6) << " | " << setw(19) << stud[i].social_work << setw(19) << " |\n";
-		fwrite(&stud[i], sizeof(TStudent), 1, fl);
 	}
 	cout << "|---------------------------------------------------------------------------------------------------------|\n\n";
 }
