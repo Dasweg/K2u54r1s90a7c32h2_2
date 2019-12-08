@@ -216,38 +216,39 @@ void controlUserAccount() { // управление уч. записями
 }
 
 void addAccountUser() { // Добавление уч. записи
-	system("cls");// Error: доделать сохранение в файл, при еще одном (повторном) добавлении уч. записи
-	if ((flAc = fopen(fileRecAc, "wb")) == NULL)
-	{
-		cout << "Ошибка при создании файла" << endl;
-		exit(1);
-	}
-	fclose(flAc);
-
-	if ((flAc = fopen(fileRecAc, "rb+")) == NULL)
+	int n;
+	system("cls");// Error: доделать сохранение в файл, при повторном добавлении уч. записи, элемент добавляется, а не заменяется на существующий
+	if ((flAc = fopen(fileRecAc, "rb+")) == NULL) // Можно как вариант (попробовать), просто заполнить структуру (не используя файл) и кинуть (записать) её потом в новый созданный файл
 	{
 		cout << "Ошибка при создании" << endl;
 		exit(1);
 	}
-	cout << "\t\t***Добавление учетной записи***\n\n";
-	cout << "Кол-во новых уч. записей: ";
-	cin >> nut;
-	for (int i = 0; i < nut; i++)
-	{
+	cout << nut << endl;
+	cout << "\t\t***Добавление уч. записи***\n\n";
+	if (nut + 1 <= sizeof(TUsers)) {
+		nut++;
 		cout << "\n--------------------------------------------------------------\n";
-		cout << "Логин: ";
-		cin.getline(users[i].login, sizeof(users[i].login));
-		cin.get(users[i].login, sizeof(users[i].login));
+		cout << "Логин новой уч. записи: ";
+		cin.getline(users[nut - 1].login, sizeof(users[nut - 1].login));
+		cin.get(users[nut - 1].login, sizeof(users[nut - 1].login));
 
-		cout << "Пароль(6 символов): ";
-		cin.getline(users[i].password, sizeof(users[i].password));
-		cin.get(users[i].password, sizeof(users[i].password));
-		//if (regex_match(users[i].password, regular)) { //регулярное для char*
+		cout << "Пароль(6 символов) новой уч. записи: ";
+		cin.getline(users[nut - 1].password, sizeof(users[nut - 1].password));
+		cin.get(users[nut - 1].password, sizeof(users[nut - 1].password));
+		//if (regex_match(users[nut].password, regular)) { //регулярное для char*
 		//	break;
 		//}
 		cout << "--------------------------------------------------------------\n";
-		fwrite(&users[i], sizeof(TUsers), 1, flAc);
+		fwrite(&users[nut - 1], sizeof(TUsers), 1, flAc);
 	}
+	else { cout << "Недостаточно памяти для добавления нового элемента!" << endl; }
+	system("cls");
+	cout << "----------------------------------------------------------------------------\n\t\t***Список учетных записей***\n----------------------------------------------------------------------------\n\n";
+	cout << "|---------------------------------|\n|  \tЛогин\t  |  \tПароль\t  |\n|---------------------------------|\n";
+	for (int i = 0; i < nut; i++) {
+		cout << "| " << setw(14) << users[i].login << setw(4) << " | " << setw(10) << users[i].password << setw(6) << " |\n";
+	}
+	cout << "|---------------------------------|\n";
 	fclose(flAc);
 	system("pause");
 	controlUserAccount();
@@ -571,7 +572,7 @@ void addStudent() { // Добавление элемента структуры
 	if (nst + 1 <= 30) {
 		nst++;
 		cout << "ФИО студента: ";
-		cin.getline(stud[nst-1].fio, sizeof(stud[nst-1].fio));// первый элемент до пробела не выводит, а последующие выводит
+		cin.getline(stud[nst - 1].fio, sizeof(stud[nst - 1].fio));// первый элемент до пробела не выводит, а последующие выводит
 		cin.get(stud[nst - 1].fio, sizeof(stud[nst - 1].fio));// эмм, все выводит, но без понятия как это работает?
 		cout << "Группа(шесть цифр): ";
 		cin >> stud[nst - 1].group;
