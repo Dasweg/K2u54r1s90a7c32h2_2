@@ -216,33 +216,41 @@ void controlUserAccount() { // управление уч. записями
 }
 
 void addAccountUser() { // Добавление уч. записи
-	system("cls");// запись происходит на ура, а вот считывание идет по пизде
-	if ((flAc = fopen(fileRecAc, "rb+")) == NULL) 
+	system("cls");
+	nut = 0;
+	if (flAc = fopen(fileRecAc, "r"))  
 	{
-		cout << "Ошибка при создании" << endl;
-		exit(1);
+		while (fread(&users[nut], sizeof(TUsers), 1, flAc) > 0) {
+			nut++;
+		}
+		fclose(flAc);
 	}
+	
 	cout << nut << endl;
+
+	cout << "----------------------------------------------------------------------------\n\t\t***Список учетных записей***\n----------------------------------------------------------------------------\n\n";
+	cout << "|---------------------------------|\n|  \tЛогин\t  |  \tПароль\t  |\n|---------------------------------|\n";
+	for (int i = 0; i < nut; i++) {
+		cout << "| " << setw(14) << users[i].login << setw(4) << " | " << setw(10) << users[i].password << setw(6) << " |\n";
+	}
+	cout << "|---------------------------------|\n";
+
 	cout << "\t\t***Добавление уч. записи***\n\n";
-	if (nut + 1 <= sizeof(TUsers)) {
-		nut++;
+	if (nut < sizeof(users)) {
 		cout << "\n--------------------------------------------------------------\n";
 		cout << "Логин новой уч. записи: ";
-		cin.getline(users[nut - 1].login, sizeof(users[nut - 1].login));
-		cin.get(users[nut - 1].login, sizeof(users[nut - 1].login));
+		cin >> users[nut].login;
 
 		cout << "Пароль(6 символов) новой уч. записи: ";
-		cin.getline(users[nut - 1].password, sizeof(users[nut - 1].password));
-		cin.get(users[nut - 1].password, sizeof(users[nut - 1].password));
+		cin >> users[nut].password;
 		//if (regex_match(users[nut].password, regular)) { //регулярное для char*
 		//	break;
 		//}
 		cout << "--------------------------------------------------------------\n";
-		fseek(flAc, 0, SEEK_END);
-		fwrite(&users[nut - 1], sizeof(TUsers), 1, flAc);
+		nut++;
 	}
 	else { cout << "Недостаточно памяти для добавления нового элемента!" << endl; }
-	fclose(flAc);
+	
 	system("cls");
 	cout << "----------------------------------------------------------------------------\n\t\t***Список учетных записей***\n----------------------------------------------------------------------------\n\n";
 	cout << "|---------------------------------|\n|  \tЛогин\t  |  \tПароль\t  |\n|---------------------------------|\n";
@@ -250,6 +258,16 @@ void addAccountUser() { // Добавление уч. записи
 		cout << "| " << setw(14) << users[i].login << setw(4) << " | " << setw(10) << users[i].password << setw(6) << " |\n";
 	}
 	cout << "|---------------------------------|\n";
+
+	if (flAc = fopen(fileRecAc, "r+")) {
+		fseek(flAc, 0, SEEK_END);
+		fwrite(&users[nut - 1], sizeof(TUsers), 1, flAc);
+		fclose(flAc);
+	}
+	else
+	{
+		cout << "Not open for write";
+	}
 	system("pause");
 	controlUserAccount();
 }
@@ -300,26 +318,25 @@ void delAccountUser() { // удаление уч. записи
 	else { cout << "Введен некорректный номер удалемой записи! Попробуйте еще раз.\n"; system("pause"); delAccountUser(); }
 }
 
-void showAllDataUsers() { // просмотр всех уч. записи
-	system("cls"); // ошибка при считывании
-	if ((flAc = fopen(fileRecAc, "rb")) == NULL)
+void showAllDataUsers() { // просмотр всех уч. записей
+	system("cls");
+	nut = 0;
+	if (flAc = fopen(fileRecAc, "r"))
 	{
-		cout << "Ошибка при открытии" << endl;
-		exit(1);
+		while (fread(&users[nut], sizeof(TUsers), 1, flAc) > 0) {
+			nut++;
+		}
+		fclose(flAc);
 	}
-	nut = 0; 
-	cout << "----------------------------------------------------------------------------\n";
-	cout << "\t\t***Список учетных записей***" << endl;
-	cout << "----------------------------------------------------------------------------\n\n";
-	cout << "|---------------------------------|\n|  \tЛогин\t  |  \tПароль\t  |\n|---------------------------------|\n";
+
 	cout << nut << endl;
-	fread(&users, sizeof(TUsers), 1, flAc);
-	for (int i = 0; i < sizeof(TUsers); i++) {
+
+	cout << "----------------------------------------------------------------------------\n\t\t***Список учетных записей***\n----------------------------------------------------------------------------\n\n";
+	cout << "|---------------------------------|\n|  \tЛогин\t  |  \tПароль\t  |\n|---------------------------------|\n";
+	for (int i = 0; i < nut; i++) {
 		cout << "| " << setw(14) << users[i].login << setw(4) << " | " << setw(10) << users[i].password << setw(6) << " |\n";
 	}
 	cout << "|---------------------------------|\n";
-	fclose(flAc);
-	cout << nut << endl;
 	system("pause");
 	controlUserAccount();
 }
