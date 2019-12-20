@@ -1,6 +1,6 @@
 ﻿  Курсач.cpp
-c:\users\anato\source\repos\курсач\курсач\курсач.cpp(191): warning C4554: "&": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\users\anato\source\repos\курсач\курсач\курсач.cpp(429): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
-c:\users\anato\source\repos\курсач\курсач\курсач.cpp(179): warning C4715: menu_ADmin: значение возвращается не при всех путях выполнения
-c:\users\anato\source\repos\курсач\курсач\курсач.cpp(398): warning C4715: menu_user: значение возвращается не при всех путях выполнения
+c:\users\anato\source\repos\курсач\курсач\курсач.cpp(225): warning C4554: "&": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+c:\users\anato\source\repos\курсач\курсач\курсач.cpp(463): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+c:\users\anato\source\repos\курсач\курсач\курсач.cpp(213): warning C4715: menu_ADmin: значение возвращается не при всех путях выполнения
+c:\users\anato\source\repos\курсач\курсач\курсач.cpp(432): warning C4715: menu_user: значение возвращается не при всех путях выполнения
   Курсач.vcxproj -> C:\Users\anato\source\repos\Курсач\Debug\Курсач.exe

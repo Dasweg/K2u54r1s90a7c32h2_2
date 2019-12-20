@@ -94,13 +94,28 @@ void autorization();// вход в уч. запись
 
 void autorization() 
 {
-	string login;
-	string password;
+	string login, password;
 	string str1 = "----------";
 
 	while (true)
 	{
 		system("cls");
+		nut = 0;
+		if (flAc = fopen(fileRecAc, "r")) // вытягиваем из файла все что есть
+		{
+			while (fread(&users[nut], sizeof(TUsers), 1, flAc) > 0) {
+				nut++;
+			}
+			fclose(flAc);
+		}
+
+		cout << "----------------------------------------------------------------------------\n\t\t***Список учетных записей***\n----------------------------------------------------------------------------\n\n";
+		cout << "|---------------------------------|\n|  \tЛогин\t  |  \tПароль\t  |\n|---------------------------------|\n";
+		for (int i = 0; i < nut; i++) {
+			cout << "| " << setw(14) << users[i].login << setw(4) << " | " << setw(10) << users[i].password << setw(6) << " |\n";
+		}
+		cout << "|---------------------------------|\n";
+
 		cout << "--------------------------------------------------------------\n\t\t***Авторизация***\n--------------------------------------------------------------\n\n";
 		cout << "--------------------------------------------------------------\n";
 		cout << "Логин: ";
@@ -108,6 +123,17 @@ void autorization()
 		cout << "Пароль: ";
 		cin >> password;
 		cout << "--------------------------------------------------------------\n";
+
+		for (int i = 0; i <= nut; i++) { 
+			if (users[i].login == login && users[i].password == password) { // тааак, хотя это и странно, но походу у с++ нет строгой типизации, хм, это плохо (str == chr - и это правильный вариант, а должен нет)
+				cout << "Все ок: " << i;
+				break;
+				system("pause");
+			}
+		}
+
+		system("pause");
+
 		if (login == "Admin" && password == "1111") {
 			
 			for (int sec = 0;; sec++)
@@ -276,13 +302,13 @@ void delAccountUser() { // удаление уч. записи
 	system("cls");
 	int numDelAc;
 	char switchNum;
-	if ((flAc = fopen(fileRecAc, "wb")) == NULL)
+	if ((flAc = fopen(fileRecAc, "w")) == NULL)
 	{
 		cout << "Ошибка при создании файла" << endl;
 		exit(1);
 	}
 	fclose(flAc);
-	if ((flAc = fopen(fileRecAc, "rb+")) == NULL)
+	if ((flAc = fopen(fileRecAc, "r+")) == NULL)
 	{
 		cout << "Ошибка при создании" << endl;
 		exit(1);
