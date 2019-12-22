@@ -37,7 +37,7 @@ typedef struct
 TStudent stud[30]; // Массив структур
 TUsers users[30]; // Массив учетных записей
 
-regex regular("^[A-Za-z][0-9]{6}$");
+regex regular("^[0-9]{6}$");
 char name_file_value[20] = {"Initial value"}; // Имя файла FilesForRecordAccounts
 char fileRecAc[40] = { "FilesForRecordAccounts" };
 string arr[2] = {"да", "нет"};
@@ -84,11 +84,13 @@ void sortBal(TStudent std); // Сортировка Среднего бала
 void search(); // Поиск
 void impFile(); // Импортирование данных
 
-void controlUserAccount(); // уч. записи пользователя
+void controlUserAccount(); // управление уч. записями пользователя
+void spisokAccountDel(); // список уч. записей пользователя (удаление)
 void spisokAccount(); // список уч. записей пользователя
 void showAllDataUsers(); // показать все уч. записи пользователя
 void addAccountUser(); // добавление новой уч. записи пользователя
 void delAccountUser(); // удаление уч. записи пользователя
+void editAccountUser(); // редактирование сущ. уч. записи пользователя
 
 void autorization();// вход в уч. запись
 
@@ -108,13 +110,7 @@ void autorization()
 			}
 			fclose(flAc);
 		}
-
-		cout << "----------------------------------------------------------------------------\n\t\t***Список учетных записей***\n----------------------------------------------------------------------------\n\n";
-		cout << "|---------------------------------|\n|  \tЛогин\t  |  \tПароль\t  |\n|---------------------------------|\n";
-		for (int i = 0; i < nut; i++) {
-			cout << "| " << setw(14) << users[i].login << setw(4) << " | " << setw(10) << users[i].password << setw(6) << " |\n";
-		}
-		cout << "|---------------------------------|\n";
+		spisokAccount();
 
 		cout << "--------------------------------------------------------------\n\t\t***Авторизация***\n--------------------------------------------------------------\n\n";
 		cout << "--------------------------------------------------------------\n";
@@ -124,18 +120,14 @@ void autorization()
 		cin >> password;
 		cout << "--------------------------------------------------------------\n";
 
-		for (int i = 0; i <= nut; i++) { 
+		for (int i = 0; i <= nut; i++) {
 			if (users[i].login == login && users[i].password == password) { // тааак, хотя это и странно, но походу у с++ нет строгой типизации, хм, это плохо (str == chr - и это правильный вариант, а должен нет)
-				cout << "Все ок: " << i;
-				break;
-				system("pause");
+				menu_user();
 			}
 		}
 
-		system("pause");
-
 		if (login == "Admin" && password == "1111") {
-			
+
 			for (int sec = 0;; sec++)
 			{
 				Sleep(470);
@@ -148,24 +140,33 @@ void autorization()
 				}
 			}
 		}
-		else if (login == "User") {
-			for (int sec = 0;; sec++)
-			{
-				Sleep(470);
-				string str2 = str1.substr(0, str1.length() - sec);
-				system("cls"); cout << str2;
-				if (sec == 10)
-				{
-					system("cls");
-					menu_user();
-				}
-			}
-		}
-		else
-		{
+		else {
 			cout << "\nНеверно введен пароль/логин. Попробуйте еще раз.\n";
 			system("pause");
 		}
+
+		//if (login == "Admin" && password == "1111") {
+
+		//	for (int sec = 0;; sec++)
+		//	{
+		//		Sleep(470);
+		//		string str2 = str1.substr(0, str1.length() - sec);
+		//		system("cls"); cout << str2;
+		//		if (sec == 10)
+		//		{
+		//			system("cls");
+		//			menu_ADmin();
+		//		}
+		//	}
+		//}
+
+		//for (int i = 0; i <= nut; i++) {
+		//	if (users[i].login == login && users[i].password == password) { // тааак, хотя это и странно, но походу у с++ нет строгой типизации, хм, это плохо (str == chr - и это правильный вариант, а должен нет)
+		//		break;
+		//		system("cls");
+		//		menu_ADmin();
+		//	}
+		//}
 	}
 }
 
@@ -225,7 +226,7 @@ void controlUserAccount() { // управление уч. записями
 				{
 					case 1: showAllDataUsers(); break;
 					case 2: addAccountUser(); break;
-					case 3:  break;
+					case 3: editAccountUser(); break;
 					case 4: delAccountUser(); break;
 					case 5: autorization(); break;
 					case 6: exit(1); break;
@@ -244,46 +245,39 @@ void controlUserAccount() { // управление уч. записями
 void addAccountUser() { // Добавление уч. записи
 	system("cls");
 	nut = 0;
-	if (flAc = fopen(fileRecAc, "r"))  
+	if (flAc = fopen(fileRecAc, "r"))
 	{
 		while (fread(&users[nut], sizeof(TUsers), 1, flAc) > 0) {
 			nut++;
 		}
 		fclose(flAc);
 	}
-	
-	cout << nut << endl;
-
-	cout << "----------------------------------------------------------------------------\n\t\t***Список учетных записей***\n----------------------------------------------------------------------------\n\n";
-	cout << "|---------------------------------|\n|  \tЛогин\t  |  \tПароль\t  |\n|---------------------------------|\n";
-	for (int i = 0; i < nut; i++) {
-		cout << "| " << setw(14) << users[i].login << setw(4) << " | " << setw(10) << users[i].password << setw(6) << " |\n";
-	}
-	cout << "|---------------------------------|\n";
 
 	cout << "\t\t***Добавление уч. записи***\n\n";
 	if (nut < sizeof(users)) {
 		cout << "\n--------------------------------------------------------------\n";
 		cout << "Логин новой уч. записи: ";
 		cin >> users[nut].login;
-
-		cout << "Пароль(6 символов) новой уч. записи: ";
-		cin >> users[nut].password;
-		//if (regex_match(users[nut].password, regular)) { //регулярное для char*
-		//	break;
-		//}
+		while (true)
+		{
+			cout << "Пароль(6 символов) новой уч. записи: ";
+			cin >> users[nut].password;
+			if (regex_match(users[nut].password, regular)) { //регулярное для char*
+				break;
+			}
+			else
+			{
+				cout << "Пароль содержит больше 6 символов в строке\n";
+				system("pause");
+			}
+		}
 		cout << "--------------------------------------------------------------\n";
 		nut++;
 	}
 	else { cout << "Недостаточно памяти для добавления нового элемента!" << endl; }
-	
+
 	system("cls");
-	cout << "----------------------------------------------------------------------------\n\t\t***Список учетных записей***\n----------------------------------------------------------------------------\n\n";
-	cout << "|---------------------------------|\n|  \tЛогин\t  |  \tПароль\t  |\n|---------------------------------|\n";
-	for (int i = 0; i < nut; i++) {
-		cout << "| " << setw(14) << users[i].login << setw(4) << " | " << setw(10) << users[i].password << setw(6) << " |\n";
-	}
-	cout << "|---------------------------------|\n";
+	spisokAccount();
 
 	if (flAc = fopen(fileRecAc, "r+")) {
 		fseek(flAc, 0, SEEK_END);
@@ -296,23 +290,97 @@ void addAccountUser() { // Добавление уч. записи
 	}
 	system("pause");
 	controlUserAccount();
+
+}
+
+void editAccountUser() { // редактирование уч. записи
+	int numEditAc;
+	char switchNum;
+	system("cls");
+	nut = 0;
+	if (flAc = fopen(fileRecAc, "r"))
+	{
+		while (fread(&users[nut], sizeof(TUsers), 1, flAc) > 0) {
+			nut++;
+		}
+		fclose(flAc);
+	}
+	spisokAccount();
+	cout << "\t\t***Редактирование записи о студенте***\n\n";
+	cout << "Введите номер записи для редактирования: ";
+	cin >> numEditAc;
+	numEditAc--;
+	if (numEditAc >= 0 && numEditAc < nut)
+	{
+		cout << "Вы действительно хотите изменить данные этой записи (y/n = д/н)? ";
+		cin >> switchNum;
+		if (switchNum == 'y' || switchNum == 'д') {
+			cout << "Логин новой уч. записи: ";
+			cin >> users[numEditAc].login;
+			while (true)
+			{
+				cout << "Пароль(6 символов) новой уч. записи: ";
+				cin >> users[numEditAc].password;
+				if (regex_match(users[numEditAc].password, regular)) { //регулярное для char*
+					break;
+				}
+				else
+				{
+					cout << "Пароль содержит больше 6 символов в строке\n";
+					system("pause");
+				}
+			}
+			nut++;
+			cout << "--------------------------------------------------------------\n";
+			if ((flAc = fopen(fileRecAc, "w")) == NULL) // файл пуст
+			{
+				cout << "Ошибка при создании файла" << endl;
+				exit(1);
+			}
+			fclose(flAc);
+			if (flAc = fopen(fileRecAc, "r+")) {
+				for (int i = 0; i < nut - 1; i++) {
+					fwrite(&users[i], sizeof(TUsers), 1, flAc);
+				}
+				fclose(flAc);
+			}
+			else
+			{
+				cout << "Not open for write";
+			}
+			system("pause");
+			controlUserAccount();
+		}
+		else if (switchNum == 'n' || switchNum == 'н') {
+			cout << "Вы вернетесь в главное меню\n";
+			system("pause");
+			controlUserAccount();
+		}
+		else
+		{
+			cout << "Такой операции не существует! Попробуйте еще раз.\n"; system("pause"); editAccountUser();
+		}
+	}
+	else { cout << "Введен некорректный номер записи! Попробуйте еще раз.\n"; system("pause"); editAccountUser(); }
 }
 
 void delAccountUser() { // удаление уч. записи
 	system("cls");
 	int numDelAc;
 	char switchNum;
-	if ((flAc = fopen(fileRecAc, "w")) == NULL)
+	if ((flAc = fopen(fileRecAc, "w")) == NULL) // файл пуст
 	{
 		cout << "Ошибка при создании файла" << endl;
 		exit(1);
 	}
 	fclose(flAc);
-	if ((flAc = fopen(fileRecAc, "r+")) == NULL)
+	if ((flAc = fopen(fileRecAc, "r+")) == NULL) // файл открыт для записи
 	{
 		cout << "Ошибка при создании" << endl;
 		exit(1);
 	}
+	spisokAccount();
+
 	cout << "\t\t***Удаление записи***\n\n";
 	cout << "Номер удаляемой уч. записи: ";
 	cin >> numDelAc;
@@ -325,8 +393,9 @@ void delAccountUser() { // удаление уч. записи
 			for (int i = numDelAc; i < nut - 1; i++)
 				users[i] = users[i + 1];
 			nut--;
-			cout << "\nРезультат удаления\n";
-			spisokAccount();
+			system("cls");
+			cout << "Результат удаления\n\n";
+			spisokAccountDel();
 			fclose(flAc);
 			system("pause");
 			controlUserAccount();
@@ -355,8 +424,6 @@ void showAllDataUsers() { // просмотр всех уч. записей
 		fclose(flAc);
 	}
 
-	cout << nut << endl;
-
 	cout << "----------------------------------------------------------------------------\n\t\t***Список учетных записей***\n----------------------------------------------------------------------------\n\n";
 	cout << "|---------------------------------|\n|  \tЛогин\t  |  \tПароль\t  |\n|---------------------------------|\n";
 	for (int i = 0; i < nut; i++) {
@@ -367,7 +434,7 @@ void showAllDataUsers() { // просмотр всех уч. записей
 	controlUserAccount();
 }
 
-void spisokAccount() { // список всех уч. записей
+void spisokAccountDel() { // список всех уч. записей
 	cout << "----------------------------------------------------------------------------\n\t\t***Список учетных записей***\n----------------------------------------------------------------------------\n\n";
 	cout << "|---------------------------------|\n|  \tЛогин\t  |  \tПароль\t  |\n|---------------------------------|\n";
 	for (int i = 0; i < nut; i++) {
@@ -375,6 +442,15 @@ void spisokAccount() { // список всех уч. записей
 		fwrite(&users[i], sizeof(TUsers), 1, flAc);
 	}
 	cout << "|---------------------------------|\n";
+}
+
+void spisokAccount() {
+	cout << "----------------------------------------------------------------------------\n\t\t***Список учетных записей***\n----------------------------------------------------------------------------\n\n";
+	cout << "|---------------------------------|\n|  \tЛогин\t  |  \tПароль\t  |\n|---------------------------------|\n";
+	for (int i = 0; i < nut; i++) {
+		cout << "| " << setw(14) << users[i].login << setw(4) << " | " << setw(10) << users[i].password << setw(6) << " |\n";
+	}
+	cout << "|---------------------------------|\n\n";
 }
 
 int menu_user() // Меню Пользователя
@@ -601,10 +677,10 @@ void editStudent() { // Рдактирование записи студента
 		}
 		else
 		{
-			cout << "Такой операции не существует! Попробуйте еще раз.\n"; system("pause"); delStudent();
+			cout << "Такой операции не существует! Попробуйте еще раз.\n"; system("pause"); editStudent();
 		}
 	}
-	else { cout << "Введен некорректный номер записи! Попробуйте еще раз.\n"; system("pause"); delStudent(); }
+	else { cout << "Введен некорректный номер записи! Попробуйте еще раз.\n"; system("pause"); editStudent(); }
 }
 
 void addStudent() { // Добавление элемента структуры
