@@ -70,7 +70,7 @@ int menu_ADmin(); // Меню Admin
 
 void sinQuest(); // Индивидуальнок задание
 
-void newFile(); // Ручной список
+void manualGenerList(); // Ручной список
 void autoGenerList(); // Автоматический список
 
 void editStudent(); // Редактирование записи студента 
@@ -144,29 +144,6 @@ void autorization()
 			cout << "\nНеверно введен пароль/логин. Попробуйте еще раз.\n";
 			system("pause");
 		}
-
-		//if (login == "Admin" && password == "1111") {
-
-		//	for (int sec = 0;; sec++)
-		//	{
-		//		Sleep(470);
-		//		string str2 = str1.substr(0, str1.length() - sec);
-		//		system("cls"); cout << str2;
-		//		if (sec == 10)
-		//		{
-		//			system("cls");
-		//			menu_ADmin();
-		//		}
-		//	}
-		//}
-
-		//for (int i = 0; i <= nut; i++) {
-		//	if (users[i].login == login && users[i].password == password) { // тааак, хотя это и странно, но походу у с++ нет строгой типизации, хм, это плохо (str == chr - и это правильный вариант, а должен нет)
-		//		break;
-		//		system("cls");
-		//		menu_ADmin();
-		//	}
-		//}
 	}
 }
 
@@ -267,7 +244,7 @@ void addAccountUser() { // Добавление уч. записи
 			}
 			else
 			{
-				cout << "Пароль содержит больше 6 символов в строке\n";
+				cout << "Пароль содержит больше/меньше 6 символов в строке\n";
 				system("pause");
 			}
 		}
@@ -298,7 +275,7 @@ void editAccountUser() { // редактирование уч. записи
 	char switchNum;
 	system("cls");
 	nut = 0;
-	if (flAc = fopen(fileRecAc, "r"))
+	if (flAc = fopen(fileRecAc, "r")) // получаю ...
 	{
 		while (fread(&users[nut], sizeof(TUsers), 1, flAc) > 0) {
 			nut++;
@@ -338,7 +315,7 @@ void editAccountUser() { // редактирование уч. записи
 				exit(1);
 			}
 			fclose(flAc);
-			if (flAc = fopen(fileRecAc, "r+")) {
+			if (flAc = fopen(fileRecAc, "r+")) { // файл открыт для записи
 				for (int i = 0; i < nut - 1; i++) {
 					fwrite(&users[i], sizeof(TUsers), 1, flAc);
 				}
@@ -434,7 +411,7 @@ void showAllDataUsers() { // просмотр всех уч. записей
 	controlUserAccount();
 }
 
-void spisokAccountDel() { // список всех уч. записей
+void spisokAccountDel() { // список всех уч. записей (удаление)
 	cout << "----------------------------------------------------------------------------\n\t\t***Список учетных записей***\n----------------------------------------------------------------------------\n\n";
 	cout << "|---------------------------------|\n|  \tЛогин\t  |  \tПароль\t  |\n|---------------------------------|\n";
 	for (int i = 0; i < nut; i++) {
@@ -444,7 +421,7 @@ void spisokAccountDel() { // список всех уч. записей
 	cout << "|---------------------------------|\n";
 }
 
-void spisokAccount() {
+void spisokAccount() { // список всех уч. записей
 	cout << "----------------------------------------------------------------------------\n\t\t***Список учетных записей***\n----------------------------------------------------------------------------\n\n";
 	cout << "|---------------------------------|\n|  \tЛогин\t  |  \tПароль\t  |\n|---------------------------------|\n";
 	for (int i = 0; i < nut; i++) {
@@ -453,18 +430,20 @@ void spisokAccount() {
 	cout << "|---------------------------------|\n\n";
 }
 
+
+// пользовательский модуль управления
 int menu_user() // Меню Пользователя
 {
 	system("cls");
 	cout << "***User***\n\n";
-	cout << "Выберите:\n1. Ввод списка и сохранение в файл" << endl;//complete
-	cout << "2. Импортирование данных из файла" << endl;
+	cout << "Выберите:\n1. Ввод списка и сохранение в файл" << endl;
+	cout << "2. Показать список из файла" << endl;
 	cout << "3. Cортировка списка" << endl;
 	cout << "4. Поиск по списку" << endl;
 	cout << "5. Просмотр списка зачисленных в общежитие" << endl;
 	cout << "6. Справка" << endl;
-	cout << "7. Вернуться к авторизации" << endl;//complete
-	cout << "8. Выход" << endl << endl;//complete
+	cout << "7. Вернуться к авторизации" << endl;
+	cout << "8. Выход" << endl << endl;
 	int i;
 	cout << "Введите команду: "; cin >> i;
 	if (i > 0 && i < 11)
@@ -477,7 +456,7 @@ int menu_user() // Меню Пользователя
 			switch (sel)
 			{
 				case 1: autoGenerList(); break;
-				case 2: newFile(); break;
+				case 2: manualGenerList(); break;
 			}
 			break;
 		case 2: impFile(); break;
@@ -488,7 +467,6 @@ int menu_user() // Меню Пользователя
 		case 7: sinQuest(); break;
 		case 8: editStudent(); break;
 		case 9: autorization(); break;
-		case 10: exit(0);
 		}
 	}
 	else
@@ -497,6 +475,7 @@ int menu_user() // Меню Пользователя
 		system("pause");
 		menu_user();
 	}
+	return 1;
 }
 
 void autoGenerList() //автоматический список
@@ -553,7 +532,7 @@ void autoGenerList() //автоматический список
 	menu_user();
 }
 
-void newFile() //Ручной способ ввода списка
+void manualGenerList() //Ручной способ ввода списка
 {
 	system("cls");
 	if ((fl = fopen(name_file_value, "wb")) == NULL)
@@ -588,10 +567,11 @@ void newFile() //Ручной способ ввода списка
 	for (int i = 0; i < nst; i++)
 	{
 		cout << "\n--------------------------------------------------------------\n";
-		cout << "ФИО студента: ";
+		cout << "ФИО студента: "; // 1
 		cin.getline(stud[i].fio, sizeof(stud[i].fio));
 		cin.get(stud[i].fio, sizeof(stud[i].fio));
-		while (true)
+
+		while (true) // 2
 		{
 			cout << "Группа(шесть цифр): ";
 			cin >> stud[i].group;
@@ -599,10 +579,8 @@ void newFile() //Ручной способ ввода списка
 					break;
 				}
 		}
-		/*if(!(regex_match(stud[i].group, regular))){//регулярные для char*
-			goto repeat1;
-		}*/
-		while (true)
+
+		while (true) // 3
 		{
 			cout << "Средний балл: ";
 			cin >> stud[i].bal;
@@ -612,20 +590,14 @@ void newFile() //Ручной способ ввода списка
 				}
 			}
 		}
-		cout << "Доход на члена семьи: ";
+
+		cout << "Доход на члена семьи: "; // 4
 		cin >> stud[i].income; 
 		cout << "\033[F"; 
 		cout << "Доход на члена семьи: " << stud[i].income << ",00р.\n";
-		while (true)
-		{
-			cout << "Участие в общественной деятельности(да/нет): ";
-			cin >> stud[i].social_work;
-			if (stud[i].social_work != "да") {
-				if (stud[i].social_work != "нет") {
-					break;
-				}
-			}
-		}
+
+		cout << "Участие в общественной деятельности(да/нет): "; // 5
+		cin >> stud[i].social_work;
 		cout << "--------------------------------------------------------------\n";
 		fwrite(&stud[i], sizeof(TStudent), 1, fl);
 	}
@@ -638,6 +610,16 @@ void editStudent() { // Рдактирование записи студента
 	int numDelItem;
 	char switchRes;
 	system("cls");
+	nst = 0;
+	if (fl = fopen(name_file_value, "rb"))
+	{
+		while (fread(&stud[nst], sizeof(TStudent), 1, fl) > 0) {
+			nst++;
+		}
+		fclose(fl);
+	}
+	spisok();
+
 	cout << "\t\t***Редактирование записи о студенте***\n\n";
 	cout << "Введите номер записи для редактирования: ";
 	cin >> numDelItem;
@@ -647,11 +629,6 @@ void editStudent() { // Рдактирование записи студента
 		cout << "Вы действительно хотите изменить данные этой записи (y/n = д/н)? ";
 		cin >> switchRes;
 		if (switchRes == 'y' || switchRes == 'д') {
-			if ((fl = fopen(name_file_value, "rb+")) == NULL)
-			{
-				cout << "Ошибка при создании" << endl;
-				exit(1);
-			}
 			cout << "ФИО студента: ";
 			cin.getline(stud[numDelItem].fio, sizeof(stud[numDelItem].fio));
 			cin.get(stud[numDelItem].fio, sizeof(stud[numDelItem].fio));
@@ -664,10 +641,25 @@ void editStudent() { // Рдактирование записи студента
 			cout << "\033[F";
 			cout << "Доход на члена семьи: " << stud[numDelItem].income << ",00р.\n";
 			cout << "Участие в общественной деятельности(да/нет): ";
-			cin >> stud[numDelItem].social_work;// запись изменена
-			spisok();// вывод
-			system("pause");
+			cin >> stud[numDelItem].social_work;
+			nst++;
+			if ((fl = fopen(name_file_value, "wb")) == NULL) // файл пуст
+			{
+				cout << "Ошибка при создании файла" << endl;
+				exit(1);
+			}
 			fclose(fl);
+			if (fl = fopen(name_file_value, "rb+")) { // файл открыт для записи
+				for (int i = 0; i < nst - 1; i++) {
+					fwrite(&stud[i], sizeof(TStudent), 1, fl);
+				}
+				fclose(fl);
+			}
+			else
+			{
+				cout << "Not open for write";
+			}
+			system("pause");
 			menu_user();
 		}
 		else if (switchRes == 'n' || switchRes == 'н') {
@@ -685,25 +677,43 @@ void editStudent() { // Рдактирование записи студента
 
 void addStudent() { // Добавление элемента структуры
 	system("cls");
+	nst = 0;
+	if (fl = fopen(name_file_value, "rb"))
+	{
+		while (fread(&stud[nst], sizeof(TStudent), 1, fl) > 0) {
+			nst++;
+		}
+		fclose(fl);
+	}
 	cout << "\t\t***Добавление записи***\n\n";
-	if (nst + 1 <= 30) {
-		nst++;
+	if (nst < sizeof(TStudent)) {
 		cout << "ФИО студента: ";
-		cin.getline(stud[nst - 1].fio, sizeof(stud[nst - 1].fio));// первый элемент до пробела не выводит, а последующие выводит
-		cin.get(stud[nst - 1].fio, sizeof(stud[nst - 1].fio));// эмм, все выводит, но без понятия как это работает?
+		cin.getline(stud[nst].fio, sizeof(stud[nst].fio));// первый элемент до пробела не выводит, а последующие выводит
+		cin.get(stud[nst].fio, sizeof(stud[nst].fio));
 		cout << "Группа(шесть цифр): ";
-		cin >> stud[nst - 1].group;
+		cin >> stud[nst].group;
 		cout << "Средний балл: ";
-		cin >> stud[nst-1].bal;
+		cin >> stud[nst].bal;
 		cout << "Доход на члена семьи: ";
-		cin >> stud[nst-1].income;
+		cin >> stud[nst].income;
 		cout << "\033[F";
-		cout << "Доход на члена семьи: " << stud[nst-1].income << ",00р.\n";
+		cout << "Доход на члена семьи: " << stud[nst].income << ",00р.\n";
 		cout << "Участие в общественной деятельности(да/нет): ";
-		cin >> stud[nst-1].social_work;
+		cin >> stud[nst].social_work;
+		nst++;
 	}
 	else { cout << "Недостаточно памяти для добавления нового элемента!" << endl; }
+
 	spisok();
+	if (fl = fopen(name_file_value, "rb+")) {
+		fseek(fl, 0, SEEK_END);
+		fwrite(&stud[nst - 1], sizeof(TStudent), 1, fl);
+		fclose(fl);
+	}
+	else
+	{
+		cout << "Not open for write";
+	}
 	system("pause");
 	menu_user();
 }
@@ -712,6 +722,18 @@ void delStudent() { // Удаление элемента из структуры
 	system("cls");
 	int numDelItem;
 	char switchRes;
+	if ((fl = fopen(name_file_value, "wb")) == NULL) // файл пуст
+	{
+		cout << "Ошибка при создании файла" << endl;
+		exit(1);
+	}
+	fclose(fl);
+	if ((fl = fopen(name_file_value, "rb+")) == NULL) // файл открыт для записи
+	{
+		cout << "Ошибка при создании" << endl;
+		exit(1);
+	}
+	spisok();
 	cout << "\t\t***Удаление записи***\n\n";
 	cout << "Введите номер удаляемой записи: ";
 	cin >> numDelItem;
@@ -725,7 +747,14 @@ void delStudent() { // Удаление элемента из структуры
 				stud[i] = stud[i + 1];
 			nst--;
 			cout << "\nРезультат удаления\n";
-			spisok();
+			cout << "\n\t\t\t\t***Список студентов в общежитие***\n\n";
+			cout << "|---------------------------------------------------------------------------------------------------------|\n|  \t\tФИО\t\t  | Группа | Средний бал |  Доход   | Участие в общественной деятельности |\n|---------------------------------------------------------------------------------------------------------|\n";
+			for (int i = 0; i < nst; i++) {
+				cout << "| " << setw(30) << stud[i].fio << setw(4) << " | " << stud[i].group << " | " << setw(6) << stud[i].bal << setw(8) << " | " << setw(5) << stud[i].income << setw(6) << " | " << setw(19) << stud[i].social_work << setw(19) << " |\n";
+				fwrite(&stud[i], sizeof(TStudent), 1, fl);
+			}
+			cout << "|---------------------------------------------------------------------------------------------------------|\n\n";
+			fclose(fl);
 			system("pause");
 			menu_user();
 		}
@@ -744,26 +773,22 @@ void delStudent() { // Удаление элемента из структуры
 
 void impFile() // Импортированный список из файла (в виде таблицы)
 {
-	system("cls");
-	if ((fl = fopen(name_file_value, "rb")) == NULL)
+	system("cls"); 
+	nst = 0;
+	if (fl = fopen(name_file_value, "rb"))
 	{
-		cout << "Ошибка при открытии" << endl;
-		exit(1);
+		while (fread(&stud[nst], sizeof(TStudent), 1, fl) > 0) {
+			nst++;
+		}
+		fclose(fl);
 	}
-	nst = 0; TStudent std;
+
 	cout << "\n\t\t\t\t***Список студентов в общежитие***\n\n";
 	cout << "|---------------------------------------------------------------------------------------------------------|\n|  \t\tФИО\t\t  | Группа | Средний бал |  Доход   | Участие в общественной деятельности |\n|---------------------------------------------------------------------------------------------------------|\n";
-	
-	while (true)
-	{
-		int nwrt = fread(&std, sizeof(TStudent), 1, fl);
-		if (nwrt != 1) break;
-		stud[nst] = std;
-		cout << "| " << setw(30) << stud[nst].fio << setw(4) <<" | " << stud[nst].group << " | " << setw(6) << stud[nst].bal << setw(8) << " | " << setw(5) << stud[nst].income << setw(6) << " | " << setw(19) << stud[nst].social_work << setw(19) << " |\n";
-		nst++;
+	for (int i = 0; i < nst; i++) {
+		cout << "| " << setw(30) << stud[i].fio << setw(4) << " | " << stud[i].group << " | " << setw(6) << stud[i].bal << setw(8) << " | " << setw(5) << stud[i].income << setw(6) << " | " << setw(19) << stud[i].social_work << setw(19) << " |\n";
 	}
-	cout << "|---------------------------------------------------------------------------------------------------------|\n";
-	fclose(fl);
+	cout << "|---------------------------------------------------------------------------------------------------------|\n\n";
 	system("pause");
 	menu_user();
 }
@@ -818,7 +843,7 @@ void sinQuest() { // Индивидуально задание
 
 	cout << "|---------------------------------------------------------------------------------------------------------|\n\n";
 	system("pause");
-	search();
+	menu_user();
 }
 
 void spisok() { // Список
